@@ -4,6 +4,7 @@
 Block::Block(){
     shape = rand() % 7;
     size = 4;
+    end = false;
     
     switch (shape){
         case 0:
@@ -85,27 +86,40 @@ void Block::Move(){
     }
 }
 
-bool Block::CheckBoundaries(){
+bool Block::CheckBoundaries(bool &end, bool occupied[10][20]){
     if(IsKeyPressed(KEY_A)){
         for(int i = 0; i < size; i++){
-            if(coord.at(i).first - 1 < 0){
+            if(coord.at(i).first <= 0){
                 coord.at(i).first = 0;
+                end = false;
+                return false;
+            }
+            if(occupied[coord.at(i).first-1][coord.at(i).second] == true){
                 return false;
             }
         }
     }
     if(IsKeyPressed(KEY_D)){
         for(int i = 0; i < size; i++){
-            if(coord.at(i).first + 1 > 9){
+            if(coord.at(i).first >= 9){
                 coord.at(i).first = 9;
+                end = false;
+                return false;
+            }
+            if(occupied[coord.at(i).first+1][coord.at(i).second] == true){
                 return false;
             }
         }
     }
 
     for(int i = 0; i < size; i++){
-        if(coord.at(i).second + 1 > 19){
+        if(coord.at(i).second >= 19){
             coord.at(i).second = 19;
+            end = true;
+            return false;
+        }
+        if(occupied[coord.at(i).first][coord.at(i).second + 1] == true){
+            end = true;
             return false;
         }
     }

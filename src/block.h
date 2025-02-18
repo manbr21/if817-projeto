@@ -8,11 +8,12 @@ class Block{
         Block();
         int shape;
         int size;
-        int right_limit, left_limit, down_limit;
         std::vector<std::pair<int,int>> coord;
         Color color;
+        bool end;
+
         void Fall();
         void Move();
-        bool CheckBoundaries();
+        bool CheckBoundaries(bool &end, bool occupied[10][20]);
     
 };
