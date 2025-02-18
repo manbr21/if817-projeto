@@ -12,7 +12,7 @@ add_library(grid_cell "${PROJECT_SOURCE_DIR}/src/grid_cell.cpp")
 target_link_libraries(tetris PRIVATE block)
 target_link_libraries(tetris PRIVATE grid_cell)
 
-target_link_libraries(tetris PRIVATE "${PROJECT_SOURCE_DIR}/lib/libraylib.so")
+target_link_libraries(tetris PRIVATE "${PROJECT_SOURCE_DIR}/lib/libraylib.so") #a versão do raylib que está na pasta é x64 a placa deve ser x86, então ficar atento caso der erro
 
 target_include_directories(tetris PUBLIC
                           "${PROJECT_SOURCE_DIR}/include"
