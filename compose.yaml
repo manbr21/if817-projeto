@@ -1,0 +1,13 @@
+name: raylib
+services:
+  raylib:
+    build: .
+    image: raylib:1.0
+    volumes:
+      - ./src:/app/src
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ./entrypoint.sh:/app/entrypoint.sh
+    container_name: raylib
+    environment:
+      - DISPLAY=:0
+
