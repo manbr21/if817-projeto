@@ -76,7 +76,7 @@ void Block::Fall(){
     }
 }
 
-void Block::Move(){
+void Block::Move(bool occupied[10][20]){
     if(IsKeyPressed(KEY_A)){
         for(int i = 0; i < size; i++){
             coord.at(i).first--;
@@ -87,11 +87,13 @@ void Block::Move(){
             coord.at(i).first++;
         }
     }
-    if (IsKeyPressed(KEY_S)){
+    if (IsKeyDown(KEY_S)){
         Fall();
     }
     if (IsKeyPressed(KEY_W)) {
-        Rotate();
+        if (CanRotate(occupied)) {
+            Rotate();
+        }
     }
 }
 
@@ -125,7 +127,6 @@ void Block::Rotate() {
                 coord.at(3) = {coord.at(3).first - 1, coord.at(2).second + 1};
             }
             break;
-        // L esquerda
         case 1:
             if (state == 0 || state == 2) {
                 coord.at(0) = {coord.at(0).first + 2, coord.at(0).second - 1};
@@ -223,6 +224,138 @@ void Block::Rotate() {
     }
 
     state = (state + 1) % 4;
+}
+
+bool Block::CanRotate(bool occupied[10][20]) {
+    switch (shape) {
+        case 0:
+            if (state == 0) {
+
+            }
+            else if (state == 1) {
+
+            }
+            else if (state == 2) {
+                
+            }
+            else {
+
+            }
+            break;
+        case 1:
+            if (state == 0 || state == 2) {
+                if (occupied[coord[0].first+2][coord[0].second-1] || coord[0].first+1 >= 10){
+                    return false;
+                }
+                if (occupied[coord[1].first][coord[1].second-1] || coord[1].second + 1 >= 20){
+                    return false;
+                }
+                if (occupied[coord[2].first+1][coord[2].second-2] || coord[2].first + 1 >= 10 || coord[2].second < 0){
+
+                }
+                if (occupied[coord[3].first][coord[3].second-1] || coord[3].second - 1  < 0) {
+                    return false;
+                }
+            }
+            else {
+                if (occupied[coord[0].first-1][coord[0].second] || coord[0].first-1 < 0){
+                    return false;
+                }
+                if (occupied[coord[1].first][coord[1].second - 1] || coord[1].second - 1 < 0){
+                    return false;
+                }
+                if (occupied[coord[2].first-1][coord[2].second+2] || coord[1].first-1 < 0 || coord[1].second + 2 >= 20){
+                    return false;
+                }
+                if (occupied[coord[3].first][coord[3].second+1] || coord[3].second + 1 >= 20){
+                    return false;
+                }
+            }
+            break;
+        case 2:
+            if (state == 0 || state == 2) {
+                if (occupied[coord[0].first+2][coord[0].second-2] || coord[0].first+2 >= 10 || coord[0].second - 2 < 0){
+                    return false;
+                }
+                if (occupied[coord[1].first+1][coord[1].second-1] || coord[1].first+1 >= 10 || coord[1].second - 1 < 0){
+                    return false;
+                }
+                if (occupied[coord[3].first - 1][coord[3].second+1] || coord[3].first - 1 < 0 || coord[3].second + 1 >= 20) {
+                    return false;
+                }
+            }
+            else {
+                if (occupied[coord[0].first-2][coord[0].second+2] || coord[0].first-2 < 0 || coord[0].second + 2 >= 20){
+                    return false;
+                }
+                if (occupied[coord[1].first - 1][coord[1].second + 1] || coord[1].first-1 < 0 || coord[1].second + 1 >= 20){
+                    return false;
+                }
+                if (occupied[coord[3].first + 1][coord[3].second - 1] || coord[3].first+1 >= 10 || coord[3].second - 1 < 0){
+                    return false;
+                }
+            }
+            break;
+        case 3:
+            if (state == 0) {
+
+            }
+            else if (state == 1) {
+
+            }
+            else if (state == 2) {
+                
+            }
+            else {
+                
+            }
+            break;
+        case 4:
+            if (state == 0) {
+
+            }
+            else if (state == 1) {
+
+            }
+            else if (state == 2) {
+                
+            }
+            else {
+                
+            }
+            break;
+        case 5:
+            if (state == 0 || state == 2) {
+                if (occupied[coord[0].first+1][coord[0].second] || coord[0].first+1 >= 10){
+                    return false;
+                }
+                if (occupied[coord[1].first][coord[1].second+1] || coord[1].second + 1 >= 20){
+                    return false;
+                }
+                if (occupied[coord[2].first+1][coord[2].second-2] || coord[2].first + 1 >= 10 || coord[2].second < 0){
+
+                }
+                if (occupied[coord[3].first][coord[3].second-1] || coord[3].second - 1  < 0) {
+                    return false;
+                }
+            }
+            else {
+                if (occupied[coord[0].first-1][coord[0].second] || coord[0].first-1 < 0){
+                    return false;
+                }
+                if (occupied[coord[1].first][coord[1].second - 1] || coord[1].second - 1 < 0){
+                    return false;
+                }
+                if (occupied[coord[2].first-1][coord[2].second+2] || coord[1].first-1 < 0 || coord[1].second + 2 >= 20){
+                    return false;
+                }
+                if (occupied[coord[3].first][coord[3].second+1] || coord[3].second + 1 >= 20){
+                    return false;
+                }
+            }
+            break;
+    }
+    return true;
 }
 
 bool Block::CheckBoundaries(bool &end, bool occupied[10][20]){

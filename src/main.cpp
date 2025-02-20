@@ -44,7 +44,7 @@ int main()
     int index = 0;
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Tetris");
-    SetTargetFPS(120);
+    SetTargetFPS(60);
     
     while (!WindowShouldClose())
     {   
@@ -62,7 +62,7 @@ int main()
         }
 
         if(blocks_at_grid.at(index).CheckBoundaries(blocks_at_grid.at(index).end, occupied)) //checa se o bloco está nos limites do jogo
-            blocks_at_grid.at(index).Move();
+            blocks_at_grid.at(index).Move(occupied);
 
         frames++;
 
