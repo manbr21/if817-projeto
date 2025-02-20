@@ -8,13 +8,13 @@ Block::Block(){
     end = false;
     
     switch (shape){
-        // L esquerda
+        // T
         case 0:
             color = PINK;
-            coord.push_back({3,0});
-            coord.push_back({4,0});
-            coord.push_back({5,0});
+            coord.push_back({3,1});
+            coord.push_back({4,1});
             coord.push_back({5,1});
+            coord.push_back({4,0});
             break;
         // Cobrinha esquerda
         case 1:
@@ -98,24 +98,22 @@ void Block::Move(){
 void Block::Rotate() {
     // Verificar Se pode rotacionar
 
-    state = (state + 1) % 4;
-
     switch (shape) {
         case 0:
             break;
         // L esquerda
         case 1:
             if (state == 0 || state == 2) {
-                coord.at(0) = {coord.at(0).first - 2, coord.at(0).second + 2};
-                coord.at(1) = {coord.at(1).first, coord.at(1).second + 1};
-                coord.at(2) = {coord.at(2).first - 1, coord.at(2).second};
-                coord.at(3) = {coord.at(3).first, coord.at(3).second - 1};
+                coord.at(0) = {coord.at(0).first + 2, coord.at(0).second - 1};
+                coord.at(1) = {coord.at(1).first + 1, coord.at(1).second};
+                coord.at(2) = {coord.at(2).first, coord.at(2).second - 1};
+                coord.at(3) = {coord.at(3).first - 1, coord.at(3).second};
             }
             else {
-                coord.at(0) = {coord.at(0).first + 1, coord.at(0).second - 2};
-                coord.at(1) = {coord.at(1).first, coord.at(1).second - 1};
-                coord.at(2) = {coord.at(2).first + 1, coord.at(2).second};
-                coord.at(3) = {coord.at(3).first, coord.at(3).second + 1};
+                coord.at(0) = {coord.at(0).first - 2, coord.at(0).second + 1};
+                coord.at(1) = {coord.at(1).first - 1, coord.at(1).second};
+                coord.at(2) = {coord.at(2).first, coord.at(2).second + 1};
+                coord.at(3) = {coord.at(3).first + 1, coord.at(3).second};
             }
             break;
         case 2:
@@ -187,6 +185,8 @@ void Block::Rotate() {
             }
             break;
     }
+
+    state = (state + 1) % 4;
 }
 
 bool Block::CheckBoundaries(bool &end, bool occupied[10][20]){
