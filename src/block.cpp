@@ -258,16 +258,16 @@ bool Block::CanRotate(bool occupied[10][20]) {
                 }
             }
             else {
-                if (occupied[coord[0].first-1][coord[0].second] || coord[0].first-1 < 0){
+                if (occupied[coord[0].first-2][coord[0].second+1] || coord[0].first-2 < 0 || coord[0].second + 1 >= 20){
                     return false;
                 }
-                if (occupied[coord[1].first][coord[1].second - 1] || coord[1].second - 1 < 0){
+                if (occupied[coord[1].first-1][coord[1].second] || coord[1].first - 1 < 0){
                     return false;
                 }
-                if (occupied[coord[2].first-1][coord[2].second+2] || coord[2].first-1 < 0 || coord[2].second + 2 >= 20){
+                if (occupied[coord[2].first][coord[2].second+1] || coord[2].second + 1 >= 20){
                     return false;
                 }
-                if (occupied[coord[3].first][coord[3].second+1] || coord[3].second + 1 >= 20){
+                if (occupied[coord[3].first+1][coord[3].second] || coord[3].first + 1 >= 10){
                     return false;
                 }
             }
