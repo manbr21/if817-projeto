@@ -44,10 +44,16 @@ int main()
             grid.nxt = new_nxt; //cria proximo bloco
             grid.index++; //proximo bloco
         }
-
-        // if(grid.IsLinecomplete() != -1){
-        //     for(int coluna = 0; coluna)
-        // }
+        
+        std::vector<int> line_index = grid.IsLinecomplete();
+        for(auto index : line_index){
+            if(index != -1){
+                // for(int i = 0; i < 10; i++){
+                //     grid.occupied[i][index] = false;
+                // }
+                cout << index << " completa\n";
+            }
+        }
         
         BeginDrawing();
 
@@ -57,10 +63,6 @@ int main()
             grid.DrawGrid();
             grid.DrawBlocks();
             grid.DrawLines();
-
-            if(grid.IsLinecomplete() != -1){
-                std::cout << "LINHA COMPLETA" << endl;
-            }
     
         EndDrawing();
 

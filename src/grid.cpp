@@ -1,5 +1,4 @@
 #include "grid.h"
-#include <iostream>
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 920
@@ -72,8 +71,9 @@ void Grid::DrawLines(){
     }
 }
 
-int Grid::IsLinecomplete(){
+std::vector<int> Grid::IsLinecomplete(){
     int cont = 0;
+    std::vector<int> lines_completed; 
     for(int linha = 0; linha < 20; linha++){
         for(int coluna = 0; coluna < 10; coluna++){
             if(occupied[coluna][linha]){
@@ -81,10 +81,10 @@ int Grid::IsLinecomplete(){
             }
         }
         if(cont == 10){
-            return linha;
+            lines_completed.push_back(linha);
         }
         cont = 0;
     }
     
-    return -1; 
+    return lines_completed; 
 }

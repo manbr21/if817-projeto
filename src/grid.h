@@ -3,6 +3,7 @@
 #include "block.h"
 #include <raylib.h>
 #include <vector>
+#include <iostream>
 
 class Grid
 {
@@ -20,5 +21,5 @@ class Grid
         void DrawGrid();
         void DrawBlocks();
         void DrawLines();
-        int IsLinecomplete();
+        std::vector<int> IsLinecomplete();
 };
