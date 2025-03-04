@@ -396,17 +396,17 @@ bool Block::CanMove(bool &end, bool occupied[10][20]){
     }
 
 
-        for(int i = 0; i < size; i++){
-            if(coord.at(i).second >= 19){
-                coord.at(i).second = 19;
-                end = true;
-                return false;
-            }
-            if(occupied[coord.at(i).first][coord.at(i).second + 1] == true){
-                end = true;
-                return false;
-            }
+    for(int i = 0; i < size; i++){
+        if(coord.at(i).second >= 19){
+            coord.at(i).second = 19;
+            end = true;
+            return false;
         }
+        if(occupied[coord.at(i).first][coord.at(i).second + 1] == true){
+            end = true;
+            return false;
+        }
+    }
     return true;
 }
 
