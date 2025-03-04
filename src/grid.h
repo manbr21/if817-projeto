@@ -8,6 +8,7 @@
 class Grid
 {
     public:
+        //grid variables
         int start_x, start_y;
         int size_x, size_y;
         int vector_size;
@@ -16,6 +17,10 @@ class Grid
         std::vector<Block> blocks_at_grid;
         Grid_Cell grid_cells[10][20];
         bool occupied[10][20];
+
+        int score;
+
+        //grid functions
         Grid();
         void FillGrid();
         void DrawGrid();

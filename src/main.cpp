@@ -74,7 +74,7 @@ int main()
                         }
                     }
                     for(int blocks = 0; blocks < grid.vector_size; blocks++){
-                        for(int i = 0; i < grid.blocks_at_grid.at(blocks).size; i++){ //seta vetor de ocupados
+                        for(int i = 0; i < grid.blocks_at_grid.at(blocks).size; i++){ //seta matriz de ocupados
                             grid.occupied[grid.blocks_at_grid.at(blocks).coord.at(i).first][grid.blocks_at_grid.at(blocks).coord.at(i).second] = true;
                         }
                     }
@@ -83,6 +83,24 @@ int main()
                     cont++;
                     sub_lines++;
                 }
+            }
+
+            switch (cont)
+            {
+            case 1:
+                grid.score += 100;
+                break;
+            case 2:
+                grid.score += 300;
+                break;
+            case 3:
+                grid.score += 500;
+                break;
+            case 4: //tetris
+                grid.score += 800;
+                break;
+            default:
+                break;
             }
 
             grid.blocks_at_grid.push_back(grid.nxt); //aciciona o novo bloco no vetor
@@ -101,6 +119,8 @@ int main()
             grid.DrawGrid();
             grid.DrawBlocks();
             grid.DrawLines();
+
+            DrawText(TextFormat("Score: %d", grid.score), grid.start_x + grid.size_x + 50, grid.start_y + 200, 50, BLACK);
     
         EndDrawing();
 

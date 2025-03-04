@@ -11,7 +11,7 @@ Grid::Grid(){
             occupied[i][j] = false;
         }
     }
-    index = 0;
+    index = 0; //first block
     start_x =  SCREEN_WIDTH / 2 - 230;
     start_y = 50;
     size_x = BLOCK_WIDTH * 10;
@@ -20,6 +20,8 @@ Grid::Grid(){
     vector_size = 0;
     blocks_at_grid.push_back(cur);
     vector_size++;
+
+    score = 0;
 }
 
 void Grid::FillGrid(){
