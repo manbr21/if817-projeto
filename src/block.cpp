@@ -358,16 +358,16 @@ bool Block::CanRotate(bool occupied[10][20]) {
     return true;
 }
 
-// bool Block::CanFall(){
-//     for(int i = 0; i < size; i++){
-//         if(coord.at(i).second >= 19){
-//             coord.at(i).second = 19;
-//             end = true;
-//             return false;
-//         }
-//     }
-//     return true;
-// }
+bool Block::CanFall(){
+    for(int i = 0; i < size; i++){
+        if(coord.at(i).second == 19){
+            coord.at(i).second = 19;
+            end = true;
+            return false;
+        }
+    }
+    return true;
+}
 
 bool Block::CanMove(bool &end, bool occupied[10][20]){
     if(IsKeyPressed(KEY_A)){

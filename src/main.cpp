@@ -26,7 +26,7 @@ int main()
     while (!WindowShouldClose())
     {   
         
-        if((frames * 1.0) / 60 == 0.5 && !grid.blocks_at_grid.at(grid.index).end && !IsKeyDown(KEY_S)){ //cai a cada 0.5s se estiver nos limites
+        if((frames * 1.0) / 60 == 0.5 && grid.blocks_at_grid.at(grid.index).CanFall()){ //cai a cada 0.5s se estiver nos limites
             grid.blocks_at_grid.at(grid.index).Fall();
             frames = 0;
         }
