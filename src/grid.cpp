@@ -74,7 +74,7 @@ void Grid::DrawLines(){
 std::vector<int> Grid::IsLinecomplete(){
     int cont = 0;
     std::vector<int> lines_completed; 
-    for(int linha = 0; linha < 20; linha++){
+    for(int linha = 19; linha >= 0; linha--){
         for(int coluna = 0; coluna < 10; coluna++){
             if(occupied[coluna][linha]){
                 cont++;
