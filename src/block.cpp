@@ -1,5 +1,6 @@
 #include "block.h"
 #include <cstdlib>
+#include <raylib.h>
 
 Block::Block(){
     shape = rand() % 7;
@@ -73,6 +74,7 @@ Block::Block(){
 void Block::Fall(){
     for(int i = 0; i < size; i++){
         coord.at(i).second++;
+        WaitTime(0.001);
     }
 }
 
