@@ -98,8 +98,6 @@ void Block::Move(bool occupied[10][20]){
 }
 
 void Block::Rotate() {
-    // Verificar Se pode rotacionar
-
     switch (shape) {
         case 0:
             if(state == 0) {
@@ -230,126 +228,246 @@ bool Block::CanRotate(bool occupied[10][20]) {
     switch (shape) {
         case 0:
             if (state == 0) {
-
+                if (OutOfBounds(occupied,coord[0].first+1,coord[0].second-1)){
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[2].first-1,coord[2].second+1)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[3].first-1,coord[3].second-1)) {
+                    return false;
+                }
             }
             else if (state == 1) {
-
+                if (OutOfBounds(occupied,coord[0].first+1,coord[0].second+1)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[2].first-1,coord[2].second-1)){
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[3].first+1,coord[2].second-1)) {
+                    return false;
+                }
             }
             else if (state == 2) {
-                
+                if (OutOfBounds(occupied,coord[0].first-1,coord[0].second+1)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[2].first+1,coord[2].second-1)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[3].first+1,coord[2].second+1)) {
+                    return false;
+                }
             }
             else {
-
+                if (OutOfBounds(occupied,coord[0].first-1,coord[0].second-1)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[2].first+1,coord[2].second+1)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[3].first-1,coord[2].second+1)) {
+                    return false;
+                }
             }
             break;
         case 1:
             if (state == 0 || state == 2) {
-                if (occupied[coord[0].first+2][coord[0].second-1] || coord[0].first+2 >= 10 || coord[0].second-1 < 0){
+                if (OutOfBounds(occupied,coord[0].first+2,coord[0].second-1)){
                     return false;
                 }
-                if (occupied[coord[1].first+1][coord[1].second] || coord[1].first + 1 >= 10){
+                if (OutOfBounds(occupied,coord[1].first+1,coord[1].second-1)){
                     return false;
                 }
-                if (occupied[coord[2].first][coord[2].second-1] || coord[2].second - 1 < 0){
-
+                if (OutOfBounds(occupied,coord[2].first,coord[2].second-1)){
+                    return false;
                 }
-                if (occupied[coord[3].first-1][coord[3].second] || coord[3].first - 1  < 0) {
+                if (OutOfBounds(occupied,coord[3].first-1,coord[3].second)) {
                     return false;
                 }
             }
             else {
-                if (occupied[coord[0].first-2][coord[0].second+1] || coord[0].first-2 < 0 || coord[0].second + 1 >= 20){
+                if (OutOfBounds(occupied,coord[0].first-2,coord[0].second+1)){
                     return false;
                 }
-                if (occupied[coord[1].first-1][coord[1].second] || coord[1].first - 1 < 0){
+                if (OutOfBounds(occupied,coord[1].first-1,coord[1].second)){
                     return false;
                 }
-                if (occupied[coord[2].first][coord[2].second+1] || coord[2].second + 1 >= 20){
+                if (OutOfBounds(occupied,coord[2].first,coord[2].second+1)){
                     return false;
                 }
-                if (occupied[coord[3].first+1][coord[3].second] || coord[3].first + 1 >= 10){
+                if (OutOfBounds(occupied,coord[3].first+1,coord[3].second)){
                     return false;
                 }
             }
             break;
         case 2:
             if (state == 0 || state == 2) {
-                if (occupied[coord[0].first+2][coord[0].second-2] || coord[0].first+2 >= 10 || coord[0].second - 2 < 0){
+                if (OutOfBounds(occupied,coord[0].first+2,coord[0].second-2)){
                     return false;
                 }
-                if (occupied[coord[1].first+1][coord[1].second-1] || coord[1].first+1 >= 10 || coord[1].second - 1 < 0){
+                if (OutOfBounds(occupied,coord[1].first+1,coord[1].second-1)){
                     return false;
                 }
-                if (occupied[coord[3].first - 1][coord[3].second+1] || coord[3].first - 1 < 0 || coord[3].second + 1 >= 20) {
+                if (OutOfBounds(occupied,coord[3].first-1,coord[3].second+1)) {
                     return false;
                 }
             }
             else {
-                if (occupied[coord[0].first-2][coord[0].second+2] || coord[0].first-2 < 0 || coord[0].second + 2 >= 20){
+                if (OutOfBounds(occupied,coord[0].first-2,coord[0].second+2)){
                     return false;
                 }
-                if (occupied[coord[1].first - 1][coord[1].second + 1] || coord[1].first-1 < 0 || coord[1].second + 1 >= 20){
+                if (OutOfBounds(occupied,coord[1].first-1,coord[1].second+1)){
                     return false;
                 }
-                if (occupied[coord[3].first + 1][coord[3].second - 1] || coord[3].first+1 >= 10 || coord[3].second - 1 < 0){
+                if (OutOfBounds(occupied,coord[3].first+1,coord[3].second-1)){
                     return false;
                 }
             }
             break;
         case 3:
             if (state == 0) {
-
+                if (OutOfBounds(occupied,coord[0].first+2,coord[0].second-1)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[1].first+1,coord[1].second)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[2].first,coord[2].second+1)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[3].first+1,coord[3].second-2)) {
+                    return false;
+                }
             }
             else if (state == 1) {
-
+                if (OutOfBounds(occupied,coord[0].first,coord[0].second+2)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[1].first-1,coord[1].second+1)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[2].first-2,coord[2].second)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[3].first+1,coord[3].second+1)) {
+                    return false;
+                }
             }
             else if (state == 2) {
-                
+                if (OutOfBounds(occupied,coord[0].first-2,coord[0].second+1)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[1].first-1,coord[1].second)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[2].first,coord[2].second-1)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[3].first-1,coord[3].second+2)) {
+                    return false;
+                }
             }
             else {
-                
+                if (OutOfBounds(occupied,coord[0].first,coord[0].second-2)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[1].first+1,coord[1].second-1)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[2].first+2,coord[2].second)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[3].first-1,coord[3].second-1)) {
+                    return false;
+                }
             }
             break;
         case 4:
             if (state == 0) {
-
+                if (OutOfBounds(occupied,coord[0].first + 2,coord[0].second-1)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[1].first+1,coord[1].second)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[2].first,coord[2].second+1)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[3].first-1,coord[3].second)) {
+                    return false;
+                }
             }
             else if (state == 1) {
-
+                if (OutOfBounds(occupied,coord[0].first,coord[0].second+2)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[1].first-1,coord[1].second+1)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[2].first-2,coord[2].second)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[3].first-1,coord[3].second-1)) {
+                    return false;
+                }
             }
             else if (state == 2) {
-                
+                if (OutOfBounds(occupied,coord[0].first-2,coord[0].second)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[1].first-1,coord[1].second-1)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[2].first,coord[2].second-2)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[3].first+1,coord[3].second-1)) {
+                    return false;
+                }
             }
             else {
-                
+                if (OutOfBounds(occupied,coord[0].first,coord[0].second-1)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[1].first+1,coord[1].second)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[2].first+2,coord[2].second+1)) {
+                    return false;
+                }
+                if (OutOfBounds(occupied,coord[3].first+1,coord[3].second+2)) {
+                    return false;
+                }
             }
             break;
         case 5:
             if (state == 0 || state == 2) {
-                if (occupied[coord[0].first+1][coord[0].second] || coord[0].first+1 >= 10){
+                if (OutOfBounds(occupied,coord[0].first+1,coord[0].second)){
                     return false;
                 }
-                if (occupied[coord[1].first][coord[1].second+1] || coord[1].second + 1 >= 20){
+                if (OutOfBounds(occupied,coord[1].first,coord[1].second+1)){
                     return false;
                 }
-                if (occupied[coord[2].first+1][coord[2].second-2] || coord[2].first + 1 >= 10 || coord[2].second < 0){
+                if (OutOfBounds(occupied,coord[2].first+1,coord[2].second-2)){
 
                 }
-                if (occupied[coord[3].first][coord[3].second-1] || coord[3].second - 1  < 0) {
+                if (OutOfBounds(occupied,coord[3].first,coord[3].second-1)) {
                     return false;
                 }
             }
             else {
-                if (occupied[coord[0].first-1][coord[0].second] || coord[0].first-1 < 0){
+                if (OutOfBounds(occupied,coord[0].first-1,coord[0].second)){
                     return false;
                 }
-                if (occupied[coord[1].first][coord[1].second - 1] || coord[1].second - 1 < 0){
+                if (OutOfBounds(occupied,coord[1].first,coord[1].second-1)){
                     return false;
                 }
-                if (occupied[coord[2].first-1][coord[2].second+2] || coord[2].first-1 < 0 || coord[2].second + 2 >= 20){
+                if (OutOfBounds(occupied,coord[2].first-1,coord[2].second+2)){
                     return false;
                 }
-                if (occupied[coord[3].first][coord[3].second+1] || coord[3].second + 1 >= 20){
+                if (OutOfBounds(occupied,coord[3].first,coord[3].second+1)){
                     return false;
                 }
             }
@@ -368,6 +486,15 @@ bool Block::CanFall(){
     }
     return true;
 }
+
+bool Block::OutOfBounds(bool occupied[10][20],int x, int y) {
+    if (x < 0 || x >= 10 || y < 0 || y >= 20 || occupied[x][y]){
+        return true;
+    }
+
+    return false;
+}
+
 
 bool Block::CanMove(bool &end, bool occupied[10][20]){
     if(IsKeyPressed(KEY_A)){

@@ -19,5 +19,6 @@ class Block{
         bool CanFall();
         bool CanMove(bool &end, bool occupied[10][20]);
         bool CanRotate(bool occupied[10][20]);
+        bool OutOfBounds(bool occupied[10][20],int x, int y);
     
 };
