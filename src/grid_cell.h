@@ -8,6 +8,7 @@ public:
     Grid_Cell();
     void Draw() const;
 
+
 private:
     
     int width;

@@ -2,6 +2,7 @@
 #include <bits/stdc++.h>
 #include "grid_cell.h"
 #include "block.h"
+#include "grid.h"
 
 using namespace std;
 
@@ -16,99 +17,115 @@ int main()
     srand(time(0));
     int frames = 0;
 
-    const int grid_start_x = SCREEN_WIDTH / 2 - 230, grid_size_x = BLOCK_WIDTH * 10, grid_start_y = 50, grid_size_y = BLOCK_HEIGHT * 20;
-
-    Grid_Cell grid[10][20]; //matriz
-    bool occupied[10][20]; //falta implementar 
-
-    //preenche o 
-    for(int i = 0; i < 10; i++){
-        for(int j = 0; j < 20;j++){
-            Grid_Cell temp;
-            temp.x = grid_start_x + i * BLOCK_WIDTH;
-            temp.y = grid_start_y + j * BLOCK_WIDTH;
-            grid[i][j] = temp;
-            occupied[i][j] = false;
-        }
-    }
-
-    vector<Block> blocks_at_grid;
-    int vector_size = 0;
-    queue<Block> cur_and_nxt_blocks;
-    Block cur, nxt;
-    blocks_at_grid.push_back(cur);
-    vector_size++;
-    cur_and_nxt_blocks.push(cur);
-    cur_and_nxt_blocks.push(nxt);
-    
-    int index = 0;
+    Grid grid;
+    grid.FillGrid();
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Tetris");
     SetTargetFPS(60);
     
     while (!WindowShouldClose())
     {   
-        if(blocks_at_grid.at(index).end){ //se bloco que está caindo chegou no fim
-            for(int i = 0; i < blocks_at_grid.at(index).size; i++){ //seta vetor de ocupados
-                occupied[blocks_at_grid.at(index).coord.at(i).first][blocks_at_grid.at(index).coord.at(i).second] = true;
-            }
-            //cur_and_nxt_blocks.pop(); //da pop na fila
-            blocks_at_grid.push_back(nxt); //aciciona o novo bloco no vetor
-            vector_size++;
-            Block new_nxt;
-            nxt = new_nxt; //cria proximo bloco
-            //cur_and_nxt_blocks.push(nxt); //coloca na fila do atual e do prox
-            index++; //proximo bloco
+        if((frames * 1.0) / 60 == 0.5 && grid.blocks_at_grid.at(grid.index).CanFall()){ //cai a cada 0.5s se estiver nos limites
+            grid.blocks_at_grid.at(grid.index).Fall();
+            frames = 0;
         }
 
-        if(blocks_at_grid.at(index).CheckBoundaries(blocks_at_grid.at(index).end, occupied)) //checa se o bloco está nos limites do jogo
-            blocks_at_grid.at(index).Move(occupied);
+        if(grid.blocks_at_grid.at(grid.index).CanMove(grid.blocks_at_grid.at(grid.index).end, grid.occupied)) //checa se o bloco está nos limites do jogo
+            grid.blocks_at_grid.at(grid.index).Move(grid.occupied);
 
-        frames++;
+        if(grid.blocks_at_grid.at(grid.index).end){ //se bloco que está caindo chegou no fim
 
-        if((frames * 1.0) / 60 == 0.5 && !blocks_at_grid.at(index).end){ //cai a cada 0.5s se estiver nos limites
-            blocks_at_grid.at(index).Fall();
-            frames = 0;
+            for(int i = 0; i < grid.blocks_at_grid.at(grid.index).size; i++){ //seta vetor de ocupados
+                grid.occupied[grid.blocks_at_grid.at(grid.index).coord.at(i).first][grid.blocks_at_grid.at(grid.index).coord.at(i).second] = true;
+            }
+
+            std::vector<int> line_index = grid.IsLinecomplete(); //checando linhas completas
+            int cont = 0, sub_lines = 0;
+            for(auto index : line_index){
+                if(index != -1){
+                    index += sub_lines;
+                
+                    //procura objetos na linha e exclui a linha
+                    for(int b_index = 0; b_index < grid.vector_size; b_index++){
+                        for(int coord_index = 0; coord_index < grid.blocks_at_grid.at(b_index).size; coord_index++){
+                            if(grid.blocks_at_grid.at(b_index).coord.at(coord_index).second == index){
+                                grid.occupied[grid.blocks_at_grid.at(b_index).coord.at(coord_index).first][grid.blocks_at_grid.at(b_index).coord.at(coord_index).second] = false;
+                                grid.blocks_at_grid.at(b_index).coord.erase((grid.blocks_at_grid.at(b_index).coord.begin() + coord_index));
+                                grid.blocks_at_grid.at(b_index).size--;
+                                coord_index--;
+                            }
+                        }
+                    }
+                    
+                    //caindo as peças
+                    for(int b_index = 0; b_index < grid.vector_size; b_index++){
+                        for(int coord_index = 0; coord_index < grid.blocks_at_grid.at(b_index).size; coord_index++){
+                            if(grid.blocks_at_grid.at(b_index).coord.at(coord_index).second < index){
+                                grid.blocks_at_grid.at(b_index).coord.at(coord_index).second++;
+                            }
+                        }
+                    }
+
+                    //atualizando matriz de ocupados
+                    for(int i = 0; i < 10; i++){
+                        for(int j = 0; j < 20; j++){
+                            grid.occupied[i][j] = false;
+                        }
+                    }
+                    for(int blocks = 0; blocks < grid.vector_size; blocks++){
+                        for(int i = 0; i < grid.blocks_at_grid.at(blocks).size; i++){ //seta matriz de ocupados
+                            grid.occupied[grid.blocks_at_grid.at(blocks).coord.at(i).first][grid.blocks_at_grid.at(blocks).coord.at(i).second] = true;
+                        }
+                    }
+                    
+                    line_index.erase(line_index.begin() + cont);
+                    cont++;
+                    sub_lines++;
+                }
+            }
+
+            switch (cont)
+            {
+            case 1:
+                grid.score += 100;
+                break;
+            case 2:
+                grid.score += 300;
+                break;
+            case 3:
+                grid.score += 500;
+                break;
+            case 4: //tetris
+                grid.score += 800;
+                break;
+            default:
+                grid.score += 10;
+                break;
+            }
+
+            grid.blocks_at_grid.push_back(grid.nxt); //aciciona o novo bloco no vetor
+            grid.vector_size++;
+
+            Block new_nxt;
+            grid.nxt = new_nxt; //cria proximo bloco
+            grid.index++; //proximo bloco
         }
         
         BeginDrawing();
 
             ClearBackground(GRAY); //blackground color
-            DrawRectangle(grid_start_x, grid_start_y, grid_size_x, grid_size_y, BLACK); //first layer grid
+            DrawRectangle(grid.start_x, grid.start_y, grid.size_x, grid.size_y, BLACK); //first layer grid
             
-            //drawing real grid
-            for(int i = 0; i < 10; i++){
-                for(int j = 0; j < 20;j++){
-                    grid[i][j].Draw();
-                }
-            }
-            
-            //drawing the blocks
-            for(int j = 0; j < vector_size; j++){
-                for(int i = 0; i < blocks_at_grid.at(j).size; i++){
-                    int coord_x = grid[blocks_at_grid.at(j).coord.at(i).first][blocks_at_grid.at(j).coord.at(i).second].x;
-                    int coord_y = grid[blocks_at_grid.at(j).coord.at(i).first][blocks_at_grid.at(j).coord.at(i).second].y;
-                    DrawRectangle(coord_x, coord_y, BLOCK_WIDTH, BLOCK_HEIGHT, blocks_at_grid.at(j).color);
-                }
-            }
-            
-            //desenhando a próxima peça e box dela
-            DrawText("NEXT",grid_start_x + grid_size_x + 110, grid_start_y + 50, 30, BLACK);
-            DrawRectangle(grid_start_x + grid_size_x + 50, grid_start_y + 80, 200, 100, BLACK);
-            for(int i = 0; i < nxt.size; i++){
-                int coord_x = grid[nxt.coord.at(i).first][nxt.coord.at(i).second].x + grid_size_x - 50;
-                int coord_y = grid[nxt.coord.at(i).first][nxt.coord.at(i).second + 2].y + 10;
-                DrawRectangle(coord_x, coord_y, BLOCK_WIDTH, BLOCK_HEIGHT, nxt.color);
-            }
+            grid.DrawGrid();
+            grid.DrawBlocks();
+            grid.DrawLines();
 
-            //drawing grid lines
-            for(int i = grid_start_x; i <= grid_size_x + grid_start_x; i+=BLOCK_WIDTH){
-                DrawLine(i, grid_start_y, i, grid_size_y + grid_start_y, WHITE);
-            }
-            for(int i = grid_start_y; i <= grid_size_y + grid_start_y; i+=BLOCK_HEIGHT){
-                DrawLine(grid_start_x, i, grid_size_x + grid_start_x, i, WHITE);
-            }
+            DrawText(TextFormat("Score: %d", grid.score), grid.start_x + grid.size_x + 50, grid.start_y + 200, 50, BLACK);
+    
         EndDrawing();
+
+        if((frames * 1.0) / 60 != 0.5)
+            frames++;
     }
     
     CloseWindow();

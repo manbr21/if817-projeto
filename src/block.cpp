@@ -476,6 +476,17 @@ bool Block::CanRotate(bool occupied[10][20]) {
     return true;
 }
 
+bool Block::CanFall(){
+    for(int i = 0; i < size; i++){
+        if(coord.at(i).second == 19){
+            coord.at(i).second = 19;
+            end = true;
+            return false;
+        }
+    }
+    return true;
+}
+
 bool Block::OutOfBounds(bool occupied[10][20],int x, int y) {
     if (x < 0 || x >= 10 || y < 0 || y >= 20 || occupied[x][y]){
         return true;
@@ -485,7 +496,7 @@ bool Block::OutOfBounds(bool occupied[10][20],int x, int y) {
 }
 
 
-bool Block::CheckBoundaries(bool &end, bool occupied[10][20]){
+bool Block::CanMove(bool &end, bool occupied[10][20]){
     if(IsKeyPressed(KEY_A)){
         for(int i = 0; i < size; i++){
             if(coord.at(i).first <= 0){
@@ -511,6 +522,7 @@ bool Block::CheckBoundaries(bool &end, bool occupied[10][20]){
         }
     }
 
+
     for(int i = 0; i < size; i++){
         if(coord.at(i).second >= 19){
             coord.at(i).second = 19;
@@ -522,7 +534,6 @@ bool Block::CheckBoundaries(bool &end, bool occupied[10][20]){
             return false;
         }
     }
-
     return true;
 }
 
