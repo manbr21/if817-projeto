@@ -18,6 +18,9 @@ target_link_libraries(grid PRIVATE grid_cell)
 
 
 target_link_libraries(tetris PRIVATE "${PROJECT_SOURCE_DIR}/lib/libraylib.so")
+target_link_libraries(grid PRIVATE "${PROJECT_SOURCE_DIR}/lib/libraylib.so")
+target_link_libraries(block PRIVATE "${PROJECT_SOURCE_DIR}/lib/libraylib.so")
+target_link_libraries(grid_cell PRIVATE "${PROJECT_SOURCE_DIR}/lib/libraylib.so")
 
 target_include_directories(tetris PUBLIC
                           "${PROJECT_SOURCE_DIR}/include"

@@ -1,8 +1,21 @@
 #include <raylib.h>
-#include <bits/stdc++.h>
+#include <vector>
 #include "grid_cell.h"
 #include "block.h"
 #include "grid.h"
+
+#include <stdio.h>	/* printf */
+#include <stdlib.h>	/* malloc, atoi, rand... */
+#include <string.h>	/* memcpy, strlen... */
+#include <stdint.h>	/* uints types */
+#include <sys/types.h>	/* size_t ,ssize_t, off_t... */
+#include <unistd.h>	/* close() read() write() */
+#include <fcntl.h>	/* open() */
+#include <sys/ioctl.h>	/* ioctl() */
+#include <errno.h>	/* error codes */
+
+#include "ioctl_cmds.h"
+#include "display.h"
 
 using namespace std;
 
@@ -22,6 +35,19 @@ int main()
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Tetris");
     SetTargetFPS(60);
+    
+    
+    int seila = open("/dev/mydev", O_RDWR);
+    
+    unsigned int data = 0xFFFFFFFF;
+    
+    ioctl(seila, WR_L_DISPLAY);
+	write(seila, &data, sizeof(data));
+	
+	ioctl(seila, WR_R_DISPLAY);
+	write(seila, &data, sizeof(data));
+	
+	close(seila);
     
     while (!WindowShouldClose())
     {   
@@ -123,7 +149,64 @@ int main()
             DrawText(TextFormat("Score: %d", grid.score), grid.start_x + grid.size_x + 50, grid.start_y + 200, 50, BLACK);
     
         EndDrawing();
-
+        
+    	int fd, retval;
+    	unsigned data = 0x0;
+		
+		fd = open("/dev/mydev", O_RDWR);
+		char vet[5];
+		
+		vet[0] = (grid.score / 1000) + 48;
+		vet[1] = (grid.score % 1000) / 100 + 48;
+		vet[2] = (grid.score % 100) / 10 + 48;
+		vet[3] = (grid.score % 10) + 48;
+		
+		printf("%s\n", vet);
+		int posi = 0;
+		for(int i=3;i>=0;i--){
+			switch (vet[i]){
+				case '0':
+					data |= (HEX_0 & 0xff) << posi;
+					break;
+				case '1':
+					data |= (HEX_1 & 0xff) << posi;
+					break;
+				case '2':
+					data |= (HEX_2 & 0xff) << posi;
+					break;
+				case '3':
+					data |= (HEX_3 & 0xff) << posi;
+					break;
+				case '4':
+					data |= (HEX_4 & 0xff) << posi;
+					break;
+				case '5':
+					data |= (HEX_5 & 0xff) << posi;
+					break;
+				case '6':
+					data |= (HEX_6 & 0xff) << posi;
+					break;
+				case '7':
+					data |= (HEX_7 & 0xff) << posi;
+					break;
+				case '8':
+					data |= (HEX_8 & 0xff) << posi;
+					break;
+				case '9':
+					data |= (HEX_9 & 0xff) << posi;
+					break;
+				default:
+					data |= 0xc0 << posi;
+					break;
+			}
+			posi += 8;
+		}
+		
+		ioctl(fd, WR_4_DISPLAY);
+		retval = write(fd, &data, sizeof(data));
+		
+		close(fd);
+	
         if((frames * 1.0) / 60 != 0.5)
             frames++;
     }

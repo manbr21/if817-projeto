@@ -1,6 +1,18 @@
 #include "block.h"
-#include <cstdlib>
+//#include <cstdlib>
 #include <raylib.h>
+
+#include <stdio.h>	/* printf */
+#include <stdlib.h>	/* malloc, atoi, rand... */
+#include <string.h>	/* memcpy, strlen... */
+#include <stdint.h>	/* uints types */
+#include <sys/types.h>	/* size_t ,ssize_t, off_t... */
+#include <unistd.h>	/* close() read() write() */
+#include <fcntl.h>	/* open() */
+#include <sys/ioctl.h>	/* ioctl() */
+#include <errno.h>	/* error codes */
+
+#include "ioctl_cmds.h"
 
 Block::Block(){
     shape = rand() % 7;
@@ -79,24 +91,38 @@ void Block::Fall(){
 }
 
 void Block::Move(bool occupied[10][20]){
-    if(IsKeyPressed(KEY_A)){
+	int data=0x0;
+	
+	int fd = open("/dev/mydev", O_RDWR);
+	
+	ioctl(fd, RD_PBUTTONS);
+	read(fd, &data, 1);
+	
+	bool press_a = (data & 0b1000) == 0;
+	bool press_d = (data & 0b0010) == 0; 
+	bool press_s = (data & 0b0100) == 0; 
+	bool press_w = (data & 0b0001) == 0; 
+	
+    if(IsKeyPressed(KEY_A) || press_a){
         for(int i = 0; i < size; i++){
             coord.at(i).first--;
         }
     }
-    if(IsKeyPressed(KEY_D)){
+    if(IsKeyPressed(KEY_D) || press_d){
         for(int i = 0; i < size; i++){
             coord.at(i).first++;
         }
     }
-    if (IsKeyDown(KEY_S)){
+    if (IsKeyDown(KEY_S) || press_s){
         Fall();
     }
-    if (IsKeyPressed(KEY_W)) {
+    if (IsKeyPressed(KEY_W) || press_w) {
         if (CanRotate(occupied)) {
             Rotate();
         }
     }
+    
+    close(fd);
 }
 
 void Block::Rotate() {
@@ -499,7 +525,20 @@ bool Block::OutOfBounds(bool occupied[10][20],int x, int y) {
 
 
 bool Block::CanMove(bool &end, bool occupied[10][20]){
-    if(IsKeyPressed(KEY_A)){
+
+	int data=0x0;
+	
+	int fd = open("/dev/mydev", O_RDWR);
+	
+	ioctl(fd, RD_PBUTTONS);
+	read(fd, &data, 1);
+	
+	bool press_a = (data & 0b1000) == 0;
+	bool press_d = (data & 0b0010) == 0; 
+	bool press_s = (data & 0b0100) == 0; 
+	bool press_w = (data & 0b0001) == 0; 
+
+    if(IsKeyPressed(KEY_A) || press_a){
         for(int i = 0; i < size; i++){
             if(coord.at(i).first <= 0){
                 coord.at(i).first = 0;
@@ -511,7 +550,7 @@ bool Block::CanMove(bool &end, bool occupied[10][20]){
             }
         }
     }
-    if(IsKeyPressed(KEY_D)){
+    if(IsKeyPressed(KEY_D) || press_d ){
         for(int i = 0; i < size; i++){
             if(coord.at(i).first >= 9){
                 coord.at(i).first = 9;
@@ -536,6 +575,9 @@ bool Block::CanMove(bool &end, bool occupied[10][20]){
             return false;
         }
     }
+    
+    close(fd);
+    
     return true;
 }
 
