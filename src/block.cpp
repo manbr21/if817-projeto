@@ -14,6 +14,16 @@
 
 #include "ioctl_cmds.h"
 
+#define BUTTON_A 0b1000
+#define BUTTON_D 0b0010
+#define BUTTON_S 0b0100
+#define BUTTON_W 0b0001
+
+bool readButton(unsigned data, unsigned button_to_read){
+	//WaitTime(0.015);
+	return (data & button_to_read) == 0;
+}
+
 Block::Block(){
     shape = rand() % 7;
     state = 0;
@@ -90,6 +100,10 @@ void Block::Fall(){
     }
 }
 
+bool ultimo_estado_w = false;
+bool ultimo_estado_a = false;
+bool ultimo_estado_d = false;
+
 void Block::Move(bool occupied[10][20]){
 	int data=0x0;
 	
@@ -103,24 +117,27 @@ void Block::Move(bool occupied[10][20]){
 	bool press_s = (data & 0b0100) == 0; 
 	bool press_w = (data & 0b0001) == 0; 
 	
-    if(IsKeyPressed(KEY_A) || press_a){
+    if(IsKeyPressed(KEY_A) || ultimo_estado_a != readButton(data, BUTTON_A) && ultimo_estado_a != true){
         for(int i = 0; i < size; i++){
             coord.at(i).first--;
         }
     }
-    if(IsKeyPressed(KEY_D) || press_d){
+    if(IsKeyPressed(KEY_D) || ultimo_estado_d != readButton(data, BUTTON_D) && ultimo_estado_d != true){
         for(int i = 0; i < size; i++){
             coord.at(i).first++;
         }
     }
-    if (IsKeyDown(KEY_S) || press_s){
+    if (IsKeyDown(KEY_S) || readButton(data, BUTTON_S)){
         Fall();
     }
-    if (IsKeyPressed(KEY_W) || press_w) {
+    if (IsKeyPressed(KEY_W) || ( ultimo_estado_w != readButton(data, BUTTON_W)) && ultimo_estado_w != true) {
         if (CanRotate(occupied)) {
             Rotate();
         }
     }
+    ultimo_estado_w = (data & BUTTON_W) == 0;
+    ultimo_estado_a = (data & BUTTON_A) == 0;
+    ultimo_estado_d = (data & BUTTON_D) == 0;
     
     close(fd);
 }
@@ -538,7 +555,7 @@ bool Block::CanMove(bool &end, bool occupied[10][20]){
 	bool press_s = (data & 0b0100) == 0; 
 	bool press_w = (data & 0b0001) == 0; 
 
-    if(IsKeyPressed(KEY_A) || press_a){
+    if(IsKeyPressed(KEY_A) || readButton(data, BUTTON_A)){
         for(int i = 0; i < size; i++){
             if(coord.at(i).first <= 0){
                 coord.at(i).first = 0;
@@ -550,7 +567,7 @@ bool Block::CanMove(bool &end, bool occupied[10][20]){
             }
         }
     }
-    if(IsKeyPressed(KEY_D) || press_d ){
+    if(IsKeyPressed(KEY_D) || readButton(data, BUTTON_D) ){
         for(int i = 0; i < size; i++){
             if(coord.at(i).first >= 9){
                 coord.at(i).first = 9;

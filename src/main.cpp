@@ -36,27 +36,33 @@ int main()
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Tetris");
     SetTargetFPS(60);
     
+    bool isPaused = false;
     
-    int seila = open("/dev/mydev", O_RDWR);
+    int driver_file = open("/dev/mydev", O_RDWR);
     
     unsigned int data = 0xFFFFFFFF;
     
-    ioctl(seila, WR_L_DISPLAY);
-	write(seila, &data, sizeof(data));
+    ioctl(driver_file, WR_L_DISPLAY);
+	write(driver_file, &data, sizeof(data));
 	
-	ioctl(seila, WR_R_DISPLAY);
-	write(seila, &data, sizeof(data));
+	ioctl(driver_file, WR_R_DISPLAY);
+	write(driver_file, &data, sizeof(data));
+
+    data = data ^ data;
+
+    ioctl(driver_file, WR_GREEN_LEDS);
+    write(driver_file, &data, sizeof(data));
 	
-	close(seila);
+	close(driver_file);
     
     while (!WindowShouldClose())
     {   
-        if((frames * 1.0) / 60 == 0.5 && grid.blocks_at_grid.at(grid.index).CanFall()){ //cai a cada 0.5s se estiver nos limites
+        if((frames * 1.0) / 60 == 0.25 && grid.blocks_at_grid.at(grid.index).CanFall() && !isPaused){ //cai a cada 0.5s se estiver nos limites
             grid.blocks_at_grid.at(grid.index).Fall();
             frames = 0;
         }
 
-        if(grid.blocks_at_grid.at(grid.index).CanMove(grid.blocks_at_grid.at(grid.index).end, grid.occupied)) //checa se o bloco está nos limites do jogo
+        if(grid.blocks_at_grid.at(grid.index).CanMove(grid.blocks_at_grid.at(grid.index).end, grid.occupied) && !isPaused) //checa se o bloco está nos limites do jogo
             grid.blocks_at_grid.at(grid.index).Move(grid.occupied);
 
         if(grid.blocks_at_grid.at(grid.index).end){ //se bloco que está caindo chegou no fim
@@ -147,6 +153,9 @@ int main()
             grid.DrawLines();
 
             DrawText(TextFormat("Score: %d", grid.score), grid.start_x + grid.size_x + 50, grid.start_y + 200, 50, BLACK);
+            if(isPaused){
+                DrawText("PAUSADO", (grid.start_x + grid.size_x) / 2 + 6, grid.start_y + 200, 83, WHITE);
+            }
     
         EndDrawing();
         
@@ -161,7 +170,7 @@ int main()
 		vet[2] = (grid.score % 100) / 10 + 48;
 		vet[3] = (grid.score % 10) + 48;
 		
-		printf("%s\n", vet);
+		//printf("%s\n", vet);
 		int posi = 0;
 		for(int i=3;i>=0;i--){
 			switch (vet[i]){
@@ -204,11 +213,54 @@ int main()
 		
 		ioctl(fd, WR_4_DISPLAY);
 		retval = write(fd, &data, sizeof(data));
+
+        switch(grid.score / 250){
+            case 0:
+                data = 0b000000000;
+                break;
+            case 1:
+                data = 0b000000001;
+                break;
+            case 2:
+                data = 0b000000011;
+                break;
+            case 3:
+                data = 0b000000111;
+                break;
+            case 4:
+                data = 0b000001111;
+                break;
+            case 5:
+                data = 0b000011111;
+                break;
+            case 6:
+                data = 0b000111111;
+                break;
+            case 7:
+                data = 0b001111111;
+                break;
+            case 8:
+                data = 0b011111111;
+                break;
+            default:
+                data = 0b111111111;
+                break;
+        }
+
+        ioctl(fd, WR_GREEN_LEDS);
+        write(fd, &data, sizeof(data));
+
+        data = data ^ data;
+
+        ioctl(fd, RD_SWITCHES);
+        read(fd, &data, 4);
 		
 		close(fd);
 	
-        if((frames * 1.0) / 60 != 0.5)
+        if((frames * 1.0) / 60 != 0.25 && !isPaused)
             frames++;
+
+        isPaused = (data & 0xf) == 0b1;
     }
     
     CloseWindow();
