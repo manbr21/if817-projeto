@@ -304,8 +304,8 @@ static int __init my_pci_probe(struct pci_dev *dev, const struct pci_device_id *
 	bar0_mmio = pci_iomap(dev, 0, bar_len);
 
 	/* initialize a default peripheral read and write pointer */
-	write_pointer = bar0_mmio + 0xC040; //nao sei pra que serve mas coloquei os valores padrao que iniciam os idx: display r
-	read_pointer  = bar0_mmio + 0xC060; //nao sei pra que serve mas coloquei os valores padrao que iniciam os idx: switch
+	write_pointer = bar0_mmio + 0xC040; 
+	read_pointer  = bar0_mmio + 0xC060; 
 
 	return 0;
 }
